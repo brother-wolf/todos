@@ -53,7 +53,7 @@ fn task_todo_data_row_should_output_correctly() {
     let data = DataRowProcessor::from(line);
     let row = data.first().unwrap();
     let result = Bitbar::transform_data_type(row);
-    assert_eq!("-- :small_red_triangle: something", result);
+    assert_eq!("-- :small_red_triangle: something | color=red", result);
 }
 
 #[test]
@@ -64,5 +64,16 @@ fn task_done_data_row_should_output_correctly() {
     let data = DataRowProcessor::from(line);
     let row = data.first().unwrap();
     let result = Bitbar::transform_data_type(row);
-    assert_eq!("-- :small_blue_diamond: something", result);
+    assert_eq!("-- :small_blue_diamond: something | color=green", result);
+}
+
+#[test]
+fn task_in_progress_data_row_should_output_correctly() {
+    use crate::models::datarow::DataRowProcessor;
+
+    let line = "  * [ ] ! something";
+    let data = DataRowProcessor::from(line);
+    let row = data.first().unwrap();
+    let result = Bitbar::transform_data_type(row);
+    assert_eq!("-- :small_orange_diamond: something | color=yellow", result);
 }
