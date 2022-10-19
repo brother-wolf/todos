@@ -1,7 +1,10 @@
 # ToDos
 
 Used to parse a markdown file and output it for BitBar
-  
+A todo file should be saved in the format of `todo-${list_name}.md` and a symlink .todo.md created pointing to it.
+The application scans this folder and gives the option to switch to another todo list by invoking `ln` via the terminal.
+
+
 Markdown | bitbar interpretation
 --- | ---
 # | List Title

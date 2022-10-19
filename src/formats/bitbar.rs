@@ -1,5 +1,6 @@
 use crate::models::datarow::{Data, DataType};
 use std::ops::Add;
+use crate::files::file_ops::directory_from_file;
 
 pub struct Bitbar {}
 
@@ -33,7 +34,7 @@ impl Bitbar {
             .collect()
     }
 
-    pub fn process(data_rows: Vec::<Data>, count: usize, editor: &str, source_file: &str, icon: &str, empty_icon: &str) {
+    pub fn process(data_rows: Vec::<Data>, count: usize, editor: &str, source_file: &str, icon: &str, empty_icon: &str, other_todos: &Vec<String>) {
         println!(":{}:{}\n---", if count == 0 && !empty_icon.is_empty() { empty_icon } else { icon }, count);
         for data_row in data_rows {
             println!("{}", Bitbar::transform_data_type(&data_row));
@@ -41,6 +42,15 @@ impl Bitbar {
         }
         if !editor.is_empty() {
             println!("---\nOpen file | size=-4 bash={} param1={} terminal=false\n---", editor, source_file);
+        }
+        if !other_todos.is_empty() {
+            let todo_list_directory = directory_from_file(source_file);
+            println!("---");
+            println!("switch list");
+            other_todos.iter().for_each(|f| {
+                let list_name = f.rsplit(".md").last().unwrap() .split("todo-").last().unwrap();
+                println!("-- {} | terminal=false bash=/bin/ln param1=-sf param2={}/{} param3={}/.todo.md", list_name, todo_list_directory, f, todo_list_directory);
+            });
         }
     }
 }

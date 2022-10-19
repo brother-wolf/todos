@@ -1,11 +1,13 @@
 mod formats;
 mod models;
+mod files;
 
 use structopt::StructOpt;
 use crate::models::datarow::{Data, DataType, DataRowProcessor};
 use crate::formats::format::Format;
 use crate::formats::bitbar::Bitbar;
 
+use std::usize;
 use std::{fs::File, io::{self, BufRead, BufReader}, path::Path};
 use std::str::FromStr;
 
@@ -39,6 +41,8 @@ fn main() {
         // .map(|row| row.unwrap())
         .collect::<Vec::<Data>>();
 
+    let other_todos = files::file_ops::find_other_todo_lists(Path::new(&opt.path));
+    
     let count: usize = data_rows.iter().map(|f|
          match f.data_type {
              DataType::TaskToDo => 1,
@@ -46,7 +50,7 @@ fn main() {
          }).sum();
 
     match format {
-        Ok(Format::Bitbar) => Bitbar::process(data_rows, count, &opt.editor, &opt.path, &opt.icon, &opt.empty_icon),
+        Ok(Format::Bitbar) => Bitbar::process(data_rows, count, &opt.editor, &opt.path, &opt.icon, &opt.empty_icon, &other_todos),
         Ok(_) => println!("Format not written yet"),
         Err(_) => println!(":warning: invalid format option"),
     }
